@@ -8,7 +8,7 @@ select
     "CustomerID" as customer_id,
     "DateID" as date_id,
     "IssueType" as issue_type,
-    "ResolutionTime" as resolution_time,
-    "extracted_at",
-    current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ source('raw', 'support_interactions') }}  -- References the raw.support_interactions table
+    "ResolutionTime" as resolution_time
+    -- "extracted_at",
+    -- current_timestamp as inserted_at  -- Overwrite with current timestamp
+from {{ source('data', 'support_interactions') }}  -- References the raw.support_interactions table

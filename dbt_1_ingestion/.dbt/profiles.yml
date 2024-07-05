@@ -1,29 +1,34 @@
 # Here, we include connection details for our database environments
-my_dbt_profile:
-  
-  outputs:
-  
-    dev:
-      type: postgres
-      host:     "{{ env_var('POSTGRES_HOST') }}"
-      user:     "{{ env_var('POSTGRES_USER') }}"
-      password: "{{ env_var('POSTGRES_PASSWORD') }}"
-      dbname:   "{{ env_var('POSTGRES_DB') }}"
-      schema:   "public" # this is where the source tables will be, unless otherwise specified in a 'models > sources.yml' file
-      port:     "{{ env_var('POSTGRES_PORT') | as_number }}" # adding the 'as_number' filter to avoid a dbt debug integer error ("Credentials in profile "my_dbt_profile", target "dev" invalid: '5432' is not of type 'integer'").
-      threads: 4
-
-    prod: # for now, we only have the database above, but I will let it here
-      type: postgres
-      host: [host]
-      user: [prod_user]
-      password: [prod_password]
-      dbname: [dbname]
-      schema: [prod_schema]
-      port: [port]
-      threads: [1 or more]
-  
+duckdb_profile:
   target: dev # by default dbt will connect to the 'dev' database above
+  outputs:
+    dev:
+      type: duckdb
+      path: ../databases/dev.duckdb
+      threads: 3
+
+# postgres_profile:
+#   target: dev # by default dbt will connect to the 'dev' database above
+#   outputs:
+#     dev:
+#       type: postgres
+#       host:     "{{ env_var('POSTGRES_HOST') }}"
+#       user:     "{{ env_var('POSTGRES_USER') }}"
+#       password: "{{ env_var('POSTGRES_PASSWORD') }}"
+#       dbname:   "{{ env_var('POSTGRES_DB') }}"
+#       schema:   "public" # this is where the source tables will be, unless otherwise specified in a 'models > sources.yml' file
+#       port:     "{{ env_var('POSTGRES_PORT') | as_number }}" # adding the 'as_number' filter to avoid a dbt debug integer error ("Credentials in profile "my_dbt_profile", target "dev" invalid: '5432' is not of type 'integer'").
+#       threads: 4
+
+#     prod: # for now, we only have the database above, but I will let it here
+#       type: postgres
+#       host: [host]
+#       user: [prod_user]
+#       password: [prod_password]
+#       dbname: [dbname]
+#       schema: [prod_schema]
+#       port: [port]
+#       threads: [1 or more]
 
 
 # For reference: https://docs.getdbt.com/reference/dbt-jinja-functions/env_var

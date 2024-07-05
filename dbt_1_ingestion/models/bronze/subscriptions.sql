@@ -9,7 +9,7 @@ select
     "StartDate" as start_date,
     "EndDate" as end_date,
     "Type" as type,
-    "Status" as status,
-    "extracted_at",
-    current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ source('raw', 'subscriptions') }}  -- References the raw.subscriptions table
+    "Status" as status
+    -- "extracted_at",
+    -- current_timestamp as inserted_at  -- Overwrite with current timestamp
+from {{ source('data', 'subscriptions') }}  -- References the raw.subscriptions table

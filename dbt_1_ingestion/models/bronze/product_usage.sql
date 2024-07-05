@@ -9,7 +9,7 @@ select
     "DateID" as date_id,
     "ProductID" as product_id,
     "NumLogins" as num_logins,
-    "Amount" as amount,
-    "extracted_at",
-    current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ source('raw', 'product_usage') }}  -- References the raw.product_usage table
+    "Amount" as amount
+    -- "extracted_at",
+    -- current_timestamp as inserted_at  -- Overwrite with current timestamp
+from {{ source('data', 'product_usage') }}  -- References the raw.product_usage table

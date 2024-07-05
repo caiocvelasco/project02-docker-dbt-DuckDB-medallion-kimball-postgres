@@ -1,6 +1,7 @@
 # Integrating dbt-core
 dbt-core
-dbt-postgres
+dbt-duckdb   # Installing dbt-duckdb adapter (https://docs.getdbt.com/docs/core/connect-data-platform/duckdb-setup) (https://github.com/duckdb/dbt-duckdb)
+# dbt-postgres # Installing postgres adapter
 
 # Integrating Data Analysis Tools
 pandas

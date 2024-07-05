@@ -8,7 +8,7 @@ select
     "Name" as name,
     "Age" as age,
     "Gender" as gender,
-    "SignupDate" as signup_date,
-    "extracted_at",
-    current_timestamp as inserted_at  -- -- Overwrite with current timestamp
-from {{ source('raw','customers') }}  -- References the bronze.customers table
+    "SignupDate" as signup_date
+    -- "extracted_at",
+    -- current_timestamp as inserted_at  -- -- Overwrite with current timestamp
+from {{ source('data','customers') }}  -- References the bronze.customers table

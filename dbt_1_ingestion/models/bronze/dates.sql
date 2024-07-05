@@ -9,7 +9,7 @@ select
     "Week" as week,
     "Month" as month,
     "Quarter" as quarter,
-    "Year" as year,
-    "extracted_at",
-    current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ source('raw', 'dates') }}  -- References the raw.dates table
+    "Year" as year
+    -- "extracted_at",
+    -- current_timestamp as inserted_at  -- Overwrite with current timestamp
+from {{ source('data', 'dates') }}  -- References the raw.dates table
