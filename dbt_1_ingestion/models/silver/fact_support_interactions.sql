@@ -7,6 +7,6 @@ select
     date_id,
     issue_type,
     resolution_time,
-    extracted_at,
+    -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
 from {{ ref('support_interactions') }}  -- References the bronze.support_interactions table

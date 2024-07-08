@@ -8,6 +8,6 @@ select
     product_id,
     num_logins,
     cast(amount as decimal(10, 2)) as amount,  -- Ensure amount format
-    extracted_at,
+    -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
 from {{ ref('product_usage') }}  -- References the bronze.product_usage table

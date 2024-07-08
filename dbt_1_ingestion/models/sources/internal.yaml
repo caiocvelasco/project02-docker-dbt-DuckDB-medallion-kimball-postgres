@@ -1,6 +1,6 @@
 sources:
   - name: data
-    config:
+    meta:
       external_location: "read_csv('/workspace/external_ingestion/data/{name}.csv')"
     tables:
       - name: customers

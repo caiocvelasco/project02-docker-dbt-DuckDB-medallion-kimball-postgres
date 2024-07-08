@@ -8,6 +8,6 @@ select
     cast(end_date as date) as end_date,  -- Convert to date format
     type,
     status,
-    extracted_at,
+    -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
 from {{ ref('subscriptions') }}  -- References the bronze.subscriptions table

@@ -8,6 +8,6 @@ select
     month,
     quarter,
     year,
-    extracted_at,
+    -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
 from {{ ref('dates') }}  -- References the bronze.dates table

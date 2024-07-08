@@ -21,10 +21,10 @@ models:
         description: "Signup date of the customer"
         data_tests:
           - date_format
-      - name: extracted_at
-        description: "Timestamp when the data was extracted"
-      - name: inserted_at
-        description: "Timestamp when the data was inserted into the database"
+      # - name: extracted_at
+      #   description: "Timestamp when the data was extracted"
+      # - name: inserted_at
+      #   description: "Timestamp when the data was inserted into the database"
 
   - name: dates
     description: "Date-related information"
@@ -47,10 +47,10 @@ models:
         description: "Quarter of the year"
       - name: year
         description: "Year"
-      - name: extracted_at
-        description: "Timestamp when the data was extracted"
-      - name: inserted_at
-        description: "Timestamp when the data was inserted into the database"
+      # - name: extracted_at
+      #   description: "Timestamp when the data was extracted"
+      # - name: inserted_at
+      #   description: "Timestamp when the data was inserted into the database"
 
   - name: product_usage
     description: "Product usage data by customers on specific dates"
@@ -70,10 +70,10 @@ models:
         description: "Number of logins or interactions"
       - name: amount
         description: "Amount associated with the product usage"
-      - name: extracted_at
-        description: "Timestamp when the data was extracted"
-      - name: inserted_at
-        description: "Timestamp when the data was inserted into the database"
+      # - name: extracted_at
+      #   description: "Timestamp when the data was extracted"
+      # - name: inserted_at
+      #   description: "Timestamp when the data was inserted into the database"
 
   - name: products
     description: "Information about products"
@@ -89,10 +89,10 @@ models:
         description: "Category of the product"
       - name: price
         description: "Price of the product"
-      - name: extracted_at
-        description: "Timestamp when the data was extracted"
-      - name: inserted_at
-        description: "Timestamp when the data was inserted into the database"
+      # - name: extracted_at
+      #   description: "Timestamp when the data was extracted"
+      # - name: inserted_at
+      #   description: "Timestamp when the data was inserted into the database"
 
   - name: subscriptions
     description: "Information about customer subscriptions"
@@ -116,10 +116,10 @@ models:
         description: "Type of the subscription"
       - name: status
         description: "Status of the subscription"
-      - name: extracted_at
-        description: "Timestamp when the data was extracted"
-      - name: inserted_at
-        description: "Timestamp when the data was inserted into the database"
+      # - name: extracted_at
+      #   description: "Timestamp when the data was extracted"
+      # - name: inserted_at
+      #   description: "Timestamp when the data was inserted into the database"
 
   - name: support_interactions
     description: "Information about customer support interactions"
@@ -137,7 +137,7 @@ models:
         description: "Type of the issue reported"
       - name: resolution_time
         description: "Time taken to resolve the issue"
-      - name: extracted_at
-        description: "Timestamp when the data was extracted"
-      - name: inserted_at
-        description: "Timestamp when the data was inserted into the database"
+      # - name: extracted_at
+      #   description: "Timestamp when the data was extracted"
+      # - name: inserted_at
+      #   description: "Timestamp when the data was inserted into the database"
