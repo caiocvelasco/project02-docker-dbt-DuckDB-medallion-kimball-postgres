@@ -1,7 +1,7 @@
 sources:
-  - name: data
+  - name: bronze_parquet_output
     meta:
-      external_location: "read_csv('/workspace/external_ingestion/data/{name}.csv')"
+      external_location: "/workspace/external_ingestion/bronze_parquet_output/{name}.parquet"
     tables:
       - name: customers
       - name: dates

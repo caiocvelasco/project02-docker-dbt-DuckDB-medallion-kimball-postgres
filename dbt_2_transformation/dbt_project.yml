@@ -28,12 +28,9 @@ clean-targets:        # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   my_dbt_project:
-    bronze:
-      +schema: bronze
-      +materialized: 'table'  # Configured to create tables in the bronze schema
-    # silver:
-    #   +schema: silver
-    #   +materialized: 'table'  # Configured to create tables in the silver schema
-    # gold:
-    #   +schema: gold
-    #   +materialized: 'table'  # Configured to create tables in the gold schema
+    silver:
+      +schema: silver
+      +materialized: 'table'  # Configured to create tables in the silver schema
+    gold:
+      +schema: gold
+      +materialized: 'table'  # Configured to create tables in the gold schema

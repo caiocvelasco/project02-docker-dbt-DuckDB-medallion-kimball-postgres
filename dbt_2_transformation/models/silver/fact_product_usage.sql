@@ -10,4 +10,4 @@ select
     cast(amount as decimal(10, 2)) as amount,  -- Ensure amount format
     -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ ref('product_usage') }}  -- References the bronze.product_usage table
+from {{ source('bronze_parquet_output', 'product_usage') }}  -- References the bronze.product_usage table

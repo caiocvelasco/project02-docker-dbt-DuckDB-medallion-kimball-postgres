@@ -1,6 +1,4 @@
-# ETL - Part 1 of 2 - Leveraging dbt to perform Ingestion Step (From external CSV files to an external folder, converting to Parquet).
-
-<img src = "img/project_02-elt-medallion_dbt.png">
+# ETL - Part 2 of 2 - Leveraging dbt-DuckDB to Transform data after reading external Parquet files.
 
 ## Table of Contents
 
@@ -11,7 +9,7 @@
   - [Build and Run](#build-and-run)
 - [Services](#services)
 - [dbt](#dbt)
-- [Ingestion Step](#ingestion-step)
+- [Transformation Step](#transformation-step)
 
 ## Project Structure
 
@@ -31,8 +29,11 @@
     - **models**
       - **sources**
         - sources.yml
-      - **bronze**
-        - bronze_dbt_model_1.sql
+      - **silver**
+        - silver_dbt_model_1.sql
+        - properties.sql
+      - **gold**
+        - gold_dbt_model_1.sql
         - properties.sql
     - **seeds**
     - **snapshots**
@@ -107,9 +108,9 @@ dbt (Data Build Tool) is a development environment that enables data analysts an
 1. **Install dbt**: The Dockerfile and Docker Compose file will do this for you.
 2. **Configure database connection**: The `profiles.yml` was created inside a `.dbt` folder in the same level as the `docker-compose.yml`. It defines connections to your data warehouse. It also uses environment variables to specify sensitive information like database credentials (which in this case is making reference to the `.env` file that is being ignored by `.gitignore`, so you should have one in the same level as the `docker-compose.yml` - as shown in the folder structure above.)
 3. **Install dbt packages**: Never forget to run `dbt deps` so that dbt can install the packages within the `packages.yml` file.
-4. **Run DBT**: Once dbt is installed and configured, you can use it to build your dbt models. Use the `dbt run` command to run the models against your database and apply transformations.
+4. **Run dbt**: Once dbt is installed and configured, you can use it to build your dbt models. Use the `dbt run` command to run the models against your database and apply transformations.
 
-### Ingestion Step
+### Transformation Step
 
 **Steps Summary**
 The step-by-step migration will be done for one table in Bronze. Then, we need to replicate for all the other tables.
@@ -123,7 +124,7 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
   * This repo container the necessary information in `profiles.yml` to use DuckDB as an adapter.
 3) Organize your dbt project directory.
   * `dbt_project.yml` file:
-    * Under the `models > my_dbt_project` section, include only the bronze layer, because the `dbt_1_ingestion` project only performs the ingestion step.
+    * Under the `models > my_dbt_project` section, include only the silver and gold layers, because the `dbt_2_ingestion` project only performs the transformation step.
   * `packages.yml` file:
     * It was created by me and not by dbt.
     * This file will specify the dependencies your project needs.
@@ -132,16 +133,16 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
       * `dbt clean` (to clean dependencies),
       * then `dbt deps` (this will look for the `packages.yml` file that should be in the same level as `dbt_project.yml`.)
   * `models/` folder: 
-    * Contains the dbt models (i.e., SQL scripts or *.sql files) for the bronze layer.
-    * For each layer (e.g.: `models/bronze`) there is a `properties.yml` file. This file is where you specify data columns, tests, and any other property you want to ensure at each table in the schema. 
-    * `models/sources/sources.yml`: Sources make it possible to name and describe the data loaded into your warehouse by your Extract-Load tool, i.e., the data from the CSV that was ingested into the RAW schema in PostgreSQL. When referencing these "source" tables in the dbt models, make sure to use the `{{ source('source_name','table_name') }}` jinja.
+    * Contains the dbt models (i.e., SQL scripts or *.sql files) for the silver and gold layers.
+    * For each layer (e.g.: `models/silver`) there is a `properties.yml` file. This file is where you specify data columns, tests, and any other property you want to ensure at each table in the schema. 
+    * `models/sources/sources.yml`: Sources make it possible to name and describe the data loaded into your warehouse by your Extract-Load tool, i.e., the data from the CSV that was ingested into the silver and gold schemas in DuckDB. When referencing these "source" tables in the dbt models, make sure to use the `{{ source('source_name','table_name') }}` jinja.
       * Notice that the `source_name` is defined with the `name:` tag in the `sources.yml` file.
   * `macro/` folder:
     * Here you create macros to use in your project.
     * An example is the `macro/tests/date_format.sql`. I created this macro in a `test/` folder to ensure that the date columns have a date format.
     * To apply this test, you need to put it in the `date_tests:` section of the `properties.yml` for the respective schema.
-    * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for the bronze schema (i.e., the `bronze` name) is the one being used when the schemas are created in DuckDB.
+    * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for the bronze schema (i.e., the `silver` name) is the one being used when the schemas are created in DuckDB.
 4) Run and test your dbt models.
-  * Make sure you are under the Docker's workspace where `.dbt` is located: `cd /workspace/dbt_1_ingestion`
+  * Make sure you are under the Docker's workspace where `.dbt` is located: `cd /workspace/dbt_2_transformation`
   * Make sure the database connection is working by running `dbt debug` in the Docker bash terminal.
-  * Run `dbt run --select "bronze` and dbt will materialize the tables that DuckDB read from CSV files and save them as Parquet at an exgernal folder (`external_ingestion/bronze_parquet_output`). The tables will also be materialized in DuckDB.
+  * Run `dbt run` and dbt will materialize the tables that DuckDB read from the Parquet files into DuckDB.
