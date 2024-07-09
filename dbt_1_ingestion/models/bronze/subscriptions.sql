@@ -1,7 +1,9 @@
 -- models/bronze/subscriptions.sql
 -- Transformations:
-    -- Renaming columns
-    -- Updating inserted_at
+    -- No transformations were made as the Bronze layer functions as a Raw/Landing layer of the ingestion step.
+
+-- The line below saves the dbt model externally as parquet. There are also other options. Check: https://github.com/duckdb/dbt-duckdb?tab=readme-ov-file#writing-to-external-files
+{{ config(materialized='external', location='/workspace/external_ingestion/bronze_parquet_output/subscriptions.parquet') }}
 
 select
     "SubscriptionID" as subscription_id,

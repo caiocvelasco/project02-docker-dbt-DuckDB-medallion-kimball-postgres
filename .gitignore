@@ -7,3 +7,6 @@ __pycache__
 
 # Ignore CSV files
 data/
+
+# Ignore Parquet files in DuckDB's output
+bronze_parquet_output/

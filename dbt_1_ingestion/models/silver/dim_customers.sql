@@ -1,6 +1,7 @@
 -- models/silver/dim_customers.sql
 -- Transformations:
     -- Ensuring a date format to signup_date
+
 select
     customer_id,
     name,
