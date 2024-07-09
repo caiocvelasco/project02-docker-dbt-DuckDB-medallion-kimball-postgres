@@ -1,7 +1,5 @@
 # ETL - Part 1 of 2 - Leveraging dbt to perform Ingestion Step (From external CSV files to an external folder, converting to Parquet).
 
-<img src = "img/project_02-elt-medallion_dbt.png">
-
 ## Table of Contents
 
 - [Project Structure](#project-structure)
