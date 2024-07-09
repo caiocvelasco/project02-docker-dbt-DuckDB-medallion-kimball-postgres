@@ -1,4 +1,4 @@
-# ETL - Part 1 of 2 - Leveraging dbt to perform Ingestion Step (From external CSV files to an external folder, converting to Parquet).
+# ETL - Part 1 of 2 - Leveraging dbt-DuckDB to perform Ingestion Step (Reading from external CSV files, converting to Parquet, and saving them into an external folder).
 
 ## Table of Contents
 
