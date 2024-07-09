@@ -132,7 +132,7 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
   * `models/` folder: 
     * Contains the dbt models (i.e., SQL scripts or *.sql files) for the bronze layer.
     * For each layer (e.g.: `models/bronze`) there is a `properties.yml` file. This file is where you specify data columns, tests, and any other property you want to ensure at each table in the schema. 
-    * `models/sources/sources.yml`: Sources make it possible to name and describe the data loaded into your warehouse by your Extract-Load tool, i.e., the data from the CSV that was ingested into the RAW schema in PostgreSQL. When referencing these "source" tables in the dbt models, make sure to use the `{{ source('source_name','table_name') }}` jinja.
+    * `models/sources/sources.yml`: Sources make it possible to name and describe the data loaded into your warehouse by your Extract-Load tool, i.e., the data from the CSV that was ingested into the bronze schema in DuckDB. When referencing these "source" tables in the dbt models, make sure to use the `{{ source('source_name','table_name') }}` jinja.
       * Notice that the `source_name` is defined with the `name:` tag in the `sources.yml` file.
   * `macro/` folder:
     * Here you create macros to use in your project.
