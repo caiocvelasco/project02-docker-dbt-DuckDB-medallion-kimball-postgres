@@ -1,7 +1,7 @@
 sources: 
-  - name: postgres
-    database: mydatabase
-    schema: raw
+  - name: data              # This is the name that will be used as reference in the dbt models        
+    database: postgres_db   # This is the 'alias:' tag from the profiles.yml to the attached 'postgres_db' database within DuckDB
+    schema: raw             # This will access the 'raw' schema within the Postgres
     tables:
       - name: customers
       - name: dates
@@ -9,14 +9,3 @@ sources:
       - name: products
       - name: subscriptions
       - name: support_interactions
-  
-  # - name: data
-  #   meta:
-  #     external_location: "read_csv('/workspace/external_ingestion/data/{name}.csv')"
-  #   tables:
-  #     - name: customers
-  #     - name: dates
-  #     - name: product_usage
-  #     - name: products
-  #     - name: subscriptions
-  #     - name: support_interactions
