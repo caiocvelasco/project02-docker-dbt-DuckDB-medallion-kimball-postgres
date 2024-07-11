@@ -1,7 +1,7 @@
-sources:
-  - name: data
-    meta:
-      external_location: "read_csv('/workspace/external_ingestion/data/{name}.csv')"
+sources: 
+  - name: postgres
+    database: mydatabase
+    schema: raw
     tables:
       - name: customers
       - name: dates
@@ -9,3 +9,14 @@ sources:
       - name: products
       - name: subscriptions
       - name: support_interactions
+  
+  # - name: data
+  #   meta:
+  #     external_location: "read_csv('/workspace/external_ingestion/data/{name}.csv')"
+  #   tables:
+  #     - name: customers
+  #     - name: dates
+  #     - name: product_usage
+  #     - name: products
+  #     - name: subscriptions
+  #     - name: support_interactions
