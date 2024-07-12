@@ -64,16 +64,11 @@ logs/          (to ignore logs)
 data/          (to ignore CSV files)
 
 ### Environment Variables
-The .gitignore file, ignores the ´.env´ file for security reasons. However, since this is just for educational purposes, follow the step below to include it in your project. If you do not include it, the docker will not work.
-
-Create a `.env` file in the project root with the following content:
-
-- POSTGRES_USER=your_postgres_user
-- POSTGRES_PASSWORD=your_postgres_password
-- POSTGRES_DB=your_postgres_db
-- POSTGRES_HOST=postgres
-- POSTGRES_PORT=5432
-- JUPYTER_TOKEN=123
+The ´.env´ file is in the folder above the dbt folder. For this specific dbt folder, it is not necessary. 
+If you want to check, do:
+* cd /workspace
+* printenv (this will show if the environmental variables were loaded within the Docker container)
+* printenv | grep S3 (this functions as a filter to show only the variables that contain 'S3')
 
 ### Build and Run
 
@@ -138,8 +133,8 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
     * Here you create macros to use in your project.
     * An example is the `macro/tests/date_format.sql`. I created this macro in a `test/` folder to ensure that the date columns have a date format.
     * To apply this test, you need to put it in the `date_tests:` section of the `properties.yml` for the respective schema.
-    * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for the bronze schema (i.e., the `bronze` name) is the one being used when the schemas are created in DuckDB.
+    * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for the schema (i.e., the `dbt_caio` name) is the one being used when the schemas are created in DuckDB.
 4) Run and test your dbt models.
   * Make sure you are under the Docker's workspace where `.dbt` is located: `cd /workspace/dbt_1_ingestion`
   * Make sure the database connection is working by running `dbt debug` in the Docker bash terminal.
-  * Run `dbt run --select "bronze` and dbt will materialize the tables that DuckDB read from CSV files and save them as Parquet at an exgernal folder (`external_ingestion/bronze_parquet_output`). The tables will also be materialized in DuckDB.
+  * Run `dbt run` and dbt will materialize the tables that DuckDB read from the `raw` schema in PostgreSQL and save them on a S3 Bucket as Parquet (`s3://dbt-duckdb-ingestion-s3-parquet/parquet-output`). The tables will also be materialized in DuckDB within the `dbt_caio` schema, following the best practices that are written as comments in the `profiles.yml` file.

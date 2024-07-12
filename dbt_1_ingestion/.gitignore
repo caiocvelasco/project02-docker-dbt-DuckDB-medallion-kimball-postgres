@@ -2,9 +2,6 @@
 *.pyc
 __pycache__
 
-# Ignore .env files
-.env
-
 # Ignore dbt files
 target/
 dbt_packages/
