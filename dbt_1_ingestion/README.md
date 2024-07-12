@@ -1,5 +1,7 @@
 # ETL - Part 1 of 2 - Leveraging dbt-DuckDB to perform Ingestion Step (Reading from external CSV files, converting to Parquet, and saving them into an external folder).
 
+<img src = "img/dbt_1_ingestion.png">
+
 ## Table of Contents
 
 - [Project Structure](#project-structure)
