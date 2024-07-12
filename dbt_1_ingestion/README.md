@@ -1,4 +1,4 @@
-# ETL - Part 1 of 2 - Leveraging dbt-DuckDB to perform Ingestion Step (Reading from external CSV files, converting to Parquet, and saving them into an S3 Bucket).
+# ETL - Part 1 of 2 - Leveraging dbt-DuckDB to perform Ingestion Step (Reading from Postgres, converting to Parquet, and saving them into an S3 Bucket).
 
 <img src = "img/dbt_1_ingestion.jpg">
 
