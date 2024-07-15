@@ -17,11 +17,12 @@
 - **name_of_your_project_repo (project-root)/**
     - **.devcontainer/**
       - devcontainer.json
+    - **.dbt/**
+    - **databases/**
+      - dev.duckdb
+    - **dbt_1_ingestion/**
+    - **dbt_2_transformation/**
     - **external_ingestion**
-      - **data**
-        - your_CSV_files.csv
-      - create_schemas.sql (script to create the raw schema in PostgreSQL)
-      - ingestion_in_raw.ipynb (notebook where the ingestion against PostgreSQL is executed)
     - **.env**
     - **.gitignore**
     - **.python-version**
