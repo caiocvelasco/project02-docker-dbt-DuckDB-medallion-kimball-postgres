@@ -6,6 +6,9 @@ dbt-duckdb   # Installing dbt-duckdb adapter (https://docs.getdbt.com/docs/core/
 # Integrating library to interact with AWS S3
 boto3 
 
+# Integrating Snowflake
+snowflake-connector-python
+
 # Integrating Data Analysis Tools
 pandas
 numpy

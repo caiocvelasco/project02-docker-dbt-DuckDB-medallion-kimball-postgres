@@ -1,7 +1,7 @@
 sources:
-  - name: bronze_parquet_output
+  - name: bronze    # This is the name that will be used as reference in the dbt models
     meta:
-      external_location: "/workspace/external_ingestion/bronze_parquet_output/{name}.parquet"
+      external_location: "s3://{{ env_var('S3_BUCKET_NAME') }}/{name}.parquet"
     tables:
       - name: customers
       - name: dates
