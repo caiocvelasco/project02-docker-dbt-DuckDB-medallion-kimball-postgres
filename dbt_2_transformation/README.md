@@ -29,6 +29,9 @@
     - **models**
       - **sources**
         - sources.yml
+      - **bronze**
+        - bronze_dbt_model_1.sql
+        - properties.sql
       - **silver**
         - silver_dbt_model_1.sql
         - properties.sql
@@ -45,7 +48,7 @@
     - **packages.yml**     (where dbt packages should be configured)
     - **package-lock.yml** (created by dbt when the 'dbt deps' is executed against the packages.yml)
     - **README.md**
-    - test_duckdb.ipynb    (create to serve as a simple way to run queries against DuckDB)
+    - test_snowflake.ipynb    (create to serve as a simple way to run queries against Snowflake)
 
 ## Setup Instructions
 
@@ -67,16 +70,7 @@ logs/          (to ignore logs)
 data/          (to ignore CSV files)
 
 ### Environment Variables
-The .gitignore file, ignores the ´.env´ file for security reasons. However, since this is just for educational purposes, follow the step below to include it in your project. If you do not include it, the docker will not work.
-
-Create a `.env` file in the project root with the following content:
-
-- POSTGRES_USER=your_postgres_user
-- POSTGRES_PASSWORD=your_postgres_password
-- POSTGRES_DB=your_postgres_db
-- POSTGRES_HOST=postgres
-- POSTGRES_PORT=5432
-- JUPYTER_TOKEN=123
+For this project, we use a global `.env` file that is in the level above the `dbt_2_transformation` folder.
 
 ### Build and Run
 
@@ -115,33 +109,53 @@ dbt (Data Build Tool) is a development environment that enables data analysts an
 **Steps Summary**
 The step-by-step migration will be done for one table in Bronze. Then, we need to replicate for all the other tables.
 
-1) Ensure your environment is ready.
+1) Ensure your Docker environment is ready.
   * The Dockerfile and Docker Compose file will do this for you. You just need to open the repo with VSCode (make sure to have the prerequisites, as mentioned in the `Prerequisites` section above).
-  * Check if the docker's bash terminal in VSCode can retrieve the environment variables: `env | grep POSTGRES`
-  * Make sure to add the external CSV files to `external_ingestion/data`.
-2) Configure your `profiles.yml`.
-  * `profiles.yml` is located under the `dbt_1_ingestion/.dbt/` folder.
-  * This repo container the necessary information in `profiles.yml` to use DuckDB as an adapter.
-3) Organize your dbt project directory.
-  * `dbt_project.yml` file:
-    * Under the `models > my_dbt_project` section, include only the silver and gold layers, because the `dbt_2_ingestion` project only performs the transformation step.
-  * `packages.yml` file:
-    * It was created by me and not by dbt.
-    * This file will specify the dependencies your project needs.
-    * Make sure that the `dbt-utils` package is compatible with your `dbt-core` version (https://hub.getdbt.com/dbt-labs/dbt_utils/latest/)
-    * Install dbt Packages:
-      * `dbt clean` (to clean dependencies),
-      * then `dbt deps` (this will look for the `packages.yml` file that should be in the same level as `dbt_project.yml`.)
-  * `models/` folder: 
-    * Contains the dbt models (i.e., SQL scripts or *.sql files) for the silver and gold layers.
-    * For each layer (e.g.: `models/silver`) there is a `properties.yml` file. This file is where you specify data columns, tests, and any other property you want to ensure at each table in the schema. 
-    * `models/sources/sources.yml`: Sources make it possible to name and describe the data loaded into your warehouse by your Extract-Load tool, i.e., the data from the CSV that was ingested into the silver and gold schemas in DuckDB. When referencing these "source" tables in the dbt models, make sure to use the `{{ source('source_name','table_name') }}` jinja.
-      * Notice that the `source_name` is defined with the `name:` tag in the `sources.yml` file.
-  * `macro/` folder:
-    * Here you create macros to use in your project.
-    * An example is the `macro/tests/date_format.sql`. I created this macro in a `test/` folder to ensure that the date columns have a date format.
-    * To apply this test, you need to put it in the `date_tests:` section of the `properties.yml` for the respective schema.
-    * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for the bronze schema (i.e., the `silver` name) is the one being used when the schemas are created in DuckDB.
+  * Check if the docker's bash terminal in VSCode can retrieve the environment variables and filter them to contain the string 'POSTGRES', for example: `printenv | grep POSTGRES`
+
+2) Ensure your **AWS** environment is ready.
+  * You need to setup an AWS Account. I created a Free one: https://aws.amazon.com/free/
+  * You need to create an S3 Bucket: https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html
+  * I created a bucket called: `dbt-duckdb-ingestion-s3-parquet`
+  * Recall: when I ran `dbt run` for the `dbt_1_ingestion` project, dbt read from PostgreSQL and saved the data in my S3 Bucket, as Parquet.
+
+3) Ensure your **Snowflake** environment is ready.
+  * You need to setup an Snowflake Account. I created a Free 30-day trial one: https://signup.snowflake.com/
+  * In this project, we read from my S3 Bucket and write into Snowflake. The way I chose to do this is called Snowflake **Storage Integration**.
+  * The idea is that this will configure access permissions for the S3 bucket.
+  * Follow this (https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration) and it will guide you through the following:
+    * Create an IAM Policy (done in AWS).
+    * Create an IAM Role (done in AWS).
+    * Create a Cloud Storage Integration in Snowflake (done in the `snowflake_stuff.ipynb` jupiter notebook).
+    * Retrieve the AWS IAM User for your Snowflake Account (done in the `snowflake_stuff.ipynb` jupiter notebook).
+    * Grant the IAM User Permissions to Access Bucket Objects (done in the `snowflake_stuff.ipynb` jupiter notebook).
+    * Create an External Stage (done in the `snowflake_stuff.ipynb` jupiter notebook).
+    * Create External Tables - one per Parquet file in S3 (done in the `snowflake_stuff.ipynb` jupiter notebook).
+
+2) Ensure your `dbt` environment is ready.
+  * Configure your `profiles.yml`.
+    * `profiles.yml` is located under the `dbt_2_transformation/.dbt/` folder.
+    * This repo container the necessary information in `profiles.yml` to use **Snowflake** as an adapter.
+  * Organize your dbt project directory.
+    * `dbt_project.yml` file:
+      * Under the `models > my_dbt_project` section, include the Bronze, Silver, and Gold layers, where the `dbt_2_transformation` project will perform the transformation step.
+    * `packages.yml` file:
+      * It was created by me and not by dbt.
+      * This file will specify the dependencies your project needs.
+      * Make sure that the `dbt-utils` package is compatible with your `dbt-core` version (https://hub.getdbt.com/dbt-labs/dbt_utils/latest/)
+      * Install dbt Packages:
+        * `dbt clean` (to clean dependencies),
+        * then `dbt deps` (this will look for the `packages.yml` file that should be in the same level as `dbt_project.yml`.)
+    * `models/` folder: 
+      * Contains the dbt models (i.e., SQL scripts or *.sql files) for the Bronze, Silver, and Gold layers.
+      * For each layer (e.g.: `models/silver`) there is a `properties.yml` file. This file is where you specify data columns, tests, and any other property you want to ensure at each table in the schema. 
+      * `models/sources/sources.yml`: Sources make it possible to name and describe the data loaded into your warehouse by your Extract-Load tool, i.e., the data from the S3 Bucker that was ingested into the Bronze (for the Bronze models). Then, `dbt` will perform the tranformation using the Bronze models are source. When referencing these "source" tables in the dbt models, make sure to use the `{{ source('source_name','table_name') }}` jinja. The Silver and Gold layer will make reference to the Bronze models by using another jinja, the `{{ ref('bronze_model_name') }}`.
+        * Notice that the `source_name` is defined with the `name:` tag in the `sources.yml` file.
+    * `macro/` folder:
+      * Here you create macros to use in your project.
+      * An example is the `macro/tests/date_format.sql`. I created this macro in a `test/` folder to ensure that the date columns have a date format.
+      * To apply this test, you need to put it in the `date_tests:` section of the `properties.yml` for the respective schema.
+      * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for (for example) the bronze schema (i.e., the `bronze` name) is the one being used when the schemas are created in the Data Warehouse (Snowflake in this case).
 4) Run and test your dbt models.
   * Make sure you are under the Docker's workspace where `.dbt` is located: `cd /workspace/dbt_2_transformation`
   * Make sure the database connection is working by running `dbt debug` in the Docker bash terminal.

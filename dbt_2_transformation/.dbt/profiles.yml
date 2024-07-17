@@ -3,7 +3,7 @@
 # However, dbt supports multiple targets within one profile to encourage the use of separate dev/prod environments.
 # Note, for the DuckDB profile you can also specify the schema parameter if you would like to use a schema besides the default (which is called main).
 
-# References:
+# References (dbt-duckdb):
 #   [0] https://github.com/duckdb/dbt-duckdb
 #   [1] https://docs.getdbt.com/docs/core/connect-data-platform/duckdb-setup
 #   [2] https://docs.getdbt.com/docs/core/connect-data-platform/connection-profiles
@@ -21,9 +21,9 @@ duckdb_profile:
       path: ../databases/dev.duckdb # If you are using path (which is the case for duckdb), then you cannot use the 'database:' tag. The database will automatically get the 'dev' from 'dev.duckdb'
       schema: 'dbt_caio' # [3] Best practices: set your 'dev' target schema to be 'dbt_<username>'. If you have multiple dbt users writing code, it often makes sense for each user to have their own development environment.
       attach: # [0]
-        - path: "{{ env_var('SNOWFLAKE_PATH') }}"
-          alias: snowflake_db
-          type: snowflake
+        - path: "postgresql://{{ env_var('POSTGRES_USER') }}:{{ env_var('POSTGRES_PASSWORD') }}@{{ env_var('POSTGRES_HOST') }}:{{ env_var('POSTGRES_PORT') | as_number }}/{{ env_var('POSTGRES_DB') }}"
+          alias: postgres_db
+          type: postgres
       extensions: # [1]
         - httpfs
         - parquet
@@ -33,15 +33,21 @@ duckdb_profile:
         s3_secret_access_key: "{{ env_var('S3_SECRET_ACCESS_KEY') }}"  # [5]
       threads: 4  # [4]
 
-# snowflake:  # Check: https://github.com/dbt-labs/jaffle-shop-mesh-platform/blob/main/profiles.yml
-#   target: dev
-#   outputs:
-#     dev:
-#       type: snowflake
-#       account: "{{ env_var('SNOWFLAKE_SANDBOX_ACCOUNT') }}"
-#       user: "{{ env_var('SNOWFLAKE_SANDBOX_USER') }}"
-#       authenticator: externalbrowser
-#       database: analytics
-#       warehouse: transforming
-#       schema: dbt_winnie
-#       threads: 8
+# References (dbt-snowflake):
+#   [0] https://docs.getdbt.com/docs/core/connect-data-platform/snowflake-setup
+#   [3] https://docs.getdbt.com/docs/core/dbt-core-environments
+#   [4] https://docs.getdbt.com/docs/running-a-dbt-project/using-threads
+#   [5] https://docs.getdbt.com/reference/dbt-jinja-functions/env_var
+
+snowflake_profile:  # Check: https://github.com/dbt-labs/jaffle-shop-mesh-platform/blob/main/profiles.yml
+  target: dev
+  outputs:
+    dev:
+      type: snowflake # [0]
+      account:  "{{ env_var('SNOWFLAKE_ACCOUNT') }}"     # [5]
+      user:     "{{ env_var('SNOWFLAKE_USER') }}"           # [5]
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}" 
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"   # [5]
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}" # [5]
+      schema: dbt_caio_snf # [3] Best practices: set your 'dev' target schema to be 'dbt_<username>'. If you have multiple dbt users writing code, it often makes sense for each user to have their own development environment.
+      threads: 8 # [4]

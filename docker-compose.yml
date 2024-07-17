@@ -31,7 +31,6 @@ services:
     volumes:
       - .:/workspace
       - ./dbt_1_ingestion/.dbt:/root/.dbt          # Mount dbt configuration for dbt_1_ingestion
-      - ./dbt_2_transformation/.dbt:/root/.dbt     # Mount dbt configuration for dbt_2_transformation
       - /var/run/docker.sock:/var/run/docker.sock  # Bind Docker socket to enable Docker commands within the container. This enable the "docke prune" command from devcontainer.json to work when rebuilding docker.
       #  - ~/.ssh:/root/.ssh
     working_dir: /workspace

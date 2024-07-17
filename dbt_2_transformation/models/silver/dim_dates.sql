@@ -10,4 +10,4 @@ select
     year,
     -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ source('bronze_parquet_output', 'dates') }}  -- References the bronze.dates table
+from {{ ref('dates') }}  -- References the bronze.dates table

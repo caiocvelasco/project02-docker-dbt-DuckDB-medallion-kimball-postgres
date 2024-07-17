@@ -10,4 +10,4 @@ select
     status,
     -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ source('bronze_parquet_output', 'subscriptions') }}  -- References the bronze.subscriptions table
+from {{ ref('subscriptions') }}  -- References the bronze.subscriptions table

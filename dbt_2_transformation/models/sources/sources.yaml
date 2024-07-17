@@ -1,5 +1,5 @@
 sources:
-  - name: bronze    # This is the name that will be used as reference in the dbt models
+  - name: data    # This is the name that will be used as reference in the dbt models
     meta:
       external_location: "s3://{{ env_var('S3_BUCKET_NAME') }}/{name}.parquet"
     tables:

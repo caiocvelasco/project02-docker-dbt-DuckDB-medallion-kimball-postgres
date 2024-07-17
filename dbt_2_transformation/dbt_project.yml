@@ -1,12 +1,12 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_dbt_project_2'
+name: 'my_dbt_project'
 version: '1.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'duckdb_profile' # Make sure this matches the name in profiles.yml
+profile: 'snowflake_profile' # Make sure this matches the name in profiles.yml
 
 # These configurations specify where dbt should look for different types of files.
 model-paths: ["models"]       # Directories to where your model and source files live
@@ -28,7 +28,7 @@ clean-targets:        # directories to be removed by `dbt clean`
 # These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
-  my_dbt_project_2:
+  my_dbt_project:
     bronze:
       +schema: bronze
       +materialized: 'table'  # Configured to create tables in the silver schema

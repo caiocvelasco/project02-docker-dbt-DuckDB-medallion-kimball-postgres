@@ -14,4 +14,4 @@ select
     "Year" as year
     -- "extracted_at",                   -- Does not exist in the CSV file
     -- current_timestamp as inserted_at  -- Overwrite with current timestamp (Does not exist in the CSV file)
-from {{ source('bronze','dates') }}        -- Here, 'data' comes from the 'name:' tag in the sources.yml
+from {{ source('data','dates') }}        -- Here, 'data' comes from the 'name:' tag in the sources.yml

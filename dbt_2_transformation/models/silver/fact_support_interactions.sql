@@ -9,4 +9,4 @@ select
     resolution_time,
     -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ source('bronze_parquet_output', 'support_interactions') }}  -- References the bronze.support_interactions table
+from {{ ref('support_interactions') }}  -- References the bronze.support_interactions table
