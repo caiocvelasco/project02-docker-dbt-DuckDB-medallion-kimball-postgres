@@ -49,5 +49,5 @@ snowflake_profile:  # Check: https://github.com/dbt-labs/jaffle-shop-mesh-platfo
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}" 
       database: "{{ env_var('SNOWFLAKE_DATABASE') }}"   # [5]
       warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}" # [5]
-      schema: dbt_caio_snf # [3] Best practices: set your 'dev' target schema to be 'dbt_<username>'. If you have multiple dbt users writing code, it often makes sense for each user to have their own development environment.
+      schema: dev_dbt_caio # [3] Default schema for this target. It will be overridden by the 'schema:' in the 'models:' section of dbt_project.yml
       threads: 8 # [4]

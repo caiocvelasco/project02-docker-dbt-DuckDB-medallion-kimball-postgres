@@ -14,4 +14,4 @@ select
     "SignupDate" as signup_date
     -- "extracted_at",                   -- Does not exist in the CSV file
     -- current_timestamp as inserted_at  -- Overwrite with current timestamp (Does not exist in the CSV file)
-from {{ source('data','customers') }}    -- Here, 'data' comes from the 'name:' tag in the sources.yml
+from {{ source('data','customers') }}   -- Here, 'data' comes from the 'name:' tag in the sources.yml

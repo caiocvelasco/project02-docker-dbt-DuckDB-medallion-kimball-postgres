@@ -1,4 +1,4 @@
-# ETL - Part 2 of 2 - Leveraging dbt-DuckDB to Transform data after reading external Parquet files.
+# ETL - Part 2 of 2 - Leveraging dbt-Snowflake to perform Transformation Step (Reading Parquet from S3 -> Storing in Snowflake External Tables -> dbt Transformation in Snowflake).
 
 ## Table of Contents
 
@@ -109,7 +109,7 @@ dbt (Data Build Tool) is a development environment that enables data analysts an
 **Steps Summary**
 The step-by-step migration will be done for one table in Bronze. Then, we need to replicate for all the other tables.
 
-1) Ensure your Docker environment is ready.
+1) Ensure your **Docker** environment is ready.
   * The Dockerfile and Docker Compose file will do this for you. You just need to open the repo with VSCode (make sure to have the prerequisites, as mentioned in the `Prerequisites` section above).
   * Check if the docker's bash terminal in VSCode can retrieve the environment variables and filter them to contain the string 'POSTGRES', for example: `printenv | grep POSTGRES`
 
@@ -121,16 +121,17 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
 
 3) Ensure your **Snowflake** environment is ready.
   * You need to setup an Snowflake Account. I created a Free 30-day trial one: https://signup.snowflake.com/
-  * In this project, we read from my S3 Bucket and write into Snowflake. The way I chose to do this is called Snowflake **Storage Integration**.
-  * The idea is that this will configure access permissions for the S3 bucket.
+  * In this project, we read from my S3 Bucket and write into Snowflake. The way I chose to do this is called Snowflake **Storage Integration**, which opens a secure connection between the Snowflake AWS Role and the AWS S3 Role.
+  * The next step after Storage Integrationis to create an **External Stage** in Snowflake.
+    * NOTE: Whenever you create a new External Stage, you need to update the `ExternalID` policy of the AWS role, in the "Trusted entities" part.
   * Follow this (https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration) and it will guide you through the following:
     * Create an IAM Policy (done in AWS).
     * Create an IAM Role (done in AWS).
-    * Create a Cloud Storage Integration in Snowflake (done in the `snowflake_stuff.ipynb` jupiter notebook).
-    * Retrieve the AWS IAM User for your Snowflake Account (done in the `snowflake_stuff.ipynb` jupiter notebook).
-    * Grant the IAM User Permissions to Access Bucket Objects (done in the `snowflake_stuff.ipynb` jupiter notebook).
-    * Create an External Stage (done in the `snowflake_stuff.ipynb` jupiter notebook).
-    * Create External Tables - one per Parquet file in S3 (done in the `snowflake_stuff.ipynb` jupiter notebook).
+    * Create a Cloud Storage Integration in Snowflake (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
+    * Retrieve the AWS IAM User for your Snowflake Account (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
+    * Grant the IAM User Permissions to Access Bucket Objects (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
+    * Create an External Stage (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
+  * Note: the **External Tables** will be created by dbt.
 
 2) Ensure your `dbt` environment is ready.
   * Configure your `profiles.yml`.
@@ -142,6 +143,7 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
     * `packages.yml` file:
       * It was created by me and not by dbt.
       * This file will specify the dependencies your project needs.
+        * We used `dbt-utils` and `dbt_external_tables`
       * Make sure that the `dbt-utils` package is compatible with your `dbt-core` version (https://hub.getdbt.com/dbt-labs/dbt_utils/latest/)
       * Install dbt Packages:
         * `dbt clean` (to clean dependencies),
@@ -159,4 +161,8 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
 4) Run and test your dbt models.
   * Make sure you are under the Docker's workspace where `.dbt` is located: `cd /workspace/dbt_2_transformation`
   * Make sure the database connection is working by running `dbt debug` in the Docker bash terminal.
+  * We are using Snowflake External Tables as a way to make reference to Parquet files in S3. Therefore, we need to run the following before doing a `dbt run`:
+    * This will create the External Tables in Snowflake: `dbt run-operation stage_external_sources`
+    * Check here: https://hub.getdbt.com/dbt-labs/dbt_external_tables/latest/
+    * An official example here: https://github.com/dbt-labs/dbt-external-tables/blob/main/sample_sources/snowflake.yml
   * Run `dbt run` and dbt will materialize the tables that DuckDB read from the Parquet files into DuckDB.
