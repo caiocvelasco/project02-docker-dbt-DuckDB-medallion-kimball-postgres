@@ -1,19 +1,22 @@
 # Defines external sources and their locations within your data warehouse.
+# Reference: https://github.com/dbt-labs/dbt-external-tables/blob/main/sample_sources/snowflake.yml
 
+version: 2
 sources:
-- name: data                     # This is the name that will be used as reference in the dbt models        
-  description: "External tables using Parquet and inferring the schema"
+- name: bronze  # This is the name that will be used as reference in the dbt models. It will be created in Snowflake it does not exists.     
+  # description: "External tables using Parquet and inferring the schema"
   database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
-  schema: "{{ env_var('SNOWFLAKE_SCHEMA_BRONZE') }}"  # Specifies the schema where the external sources reside
+  schema: "{{ env_var('SNOWFLAKE_SCHEMA_BRONZE') }}"  # Specifies the external schema where the sources reside
   loader: S3
   tables:
   - name: customers
     ext_full_refresh: true
     description: "External table with customers information"
     external:
-      location: "@my_dbt_database.bronze.my_s3_stage"  # reference an existing External Stage in Snowflake
-      file_format: "(TYPE = PARQUET)"
-      # infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
+      location: "@my_dbt_database.bronze.my_s3_stage"  # Reference an existing External Stage in Snowflake
+      pattern: "customers.parquet"
+      file_format: "MY_PARQUET_FORMAT"
+      infer_schema: true   # Parameter to tell Snowflake we want to infer the table schema
     columns:
       - name: CustomerID
         data_type: int
@@ -30,8 +33,9 @@ sources:
     description: "External table with dates information"
     external:
       location: "@my_dbt_database.bronze.my_s3_stage"  # reference an existing external stage
+      pattern: "dates.parquet"
       file_format: "(TYPE = PARQUET)"
-      # infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
+      infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
     columns:
       - name: DateID
         data_type: int
@@ -50,8 +54,9 @@ sources:
     description: "External table with product usage information"
     external:
       location: "@my_dbt_database.bronze.my_s3_stage"  # reference an existing external stage
+      pattern: "product_usage.parquet"
       file_format: "(TYPE = PARQUET)"
-      # infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
+      infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
     columns:
       - name: UsageID
         data_type: int
@@ -70,8 +75,9 @@ sources:
     description: "External table with products information"
     external:
       location: "@my_dbt_database.bronze.my_s3_stage"  # reference an existing external stage
+      pattern: "products.parquet"
       file_format: "(TYPE = PARQUET)"
-      # infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
+      infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
     columns:
       - name: ProductID
         data_type: int
@@ -86,8 +92,9 @@ sources:
     description: "External table with subscriptions information"
     external:
       location: "@my_dbt_database.bronze.my_s3_stage"  # reference an existing external stage
+      pattern: "subscriptions.parquet"
       file_format: "(TYPE = PARQUET)"
-      # infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
+      infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
     columns:
       - name: SubscriptionID
         data_type: int
@@ -106,8 +113,9 @@ sources:
     description: "External table with support interactions information"
     external:
       location: "@my_dbt_database.bronze.my_s3_stage"  # reference an existing external stage
+      pattern: "support_interactions.parquet"
       file_format: "(TYPE = PARQUET)"
-      # infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
+      infer_schema: true   # parameter to tell Snowflake we want to infer the table schema
     columns:
       - name: InteractionID
         data_type: int

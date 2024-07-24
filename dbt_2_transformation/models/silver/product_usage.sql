@@ -14,4 +14,4 @@ select
     "Amount" as amount
     -- "extracted_at",                     -- Does not exist in the CSV file
     -- current_timestamp as inserted_at    -- Overwrite with current timestamp (Does not exist in the CSV file)
-from {{ source('data','product_usage') }}  -- Here, 'data' comes from the 'name:' tag in the sources.yml
+from {{ source('bronze','product_usage') }}  -- Here, 'data' comes from the 'name:' tag in the sources.yml

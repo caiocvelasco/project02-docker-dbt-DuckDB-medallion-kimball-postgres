@@ -49,5 +49,6 @@ snowflake_profile:  # Check: https://github.com/dbt-labs/jaffle-shop-mesh-platfo
       password: "{{ env_var('SNOWFLAKE_PASSWORD') }}" 
       database: "{{ env_var('SNOWFLAKE_DATABASE') }}"   # [5]
       warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}" # [5]
+      role: "ACCOUNTADMIN"
       schema: dev_dbt_caio # [3] Default schema for this target. It will be overridden by the 'schema:' in the 'models:' section of dbt_project.yml
       threads: 8 # [4]
