@@ -61,6 +61,23 @@ Create a `.env` file in the project root with the following content:
 - POSTGRES_HOST=postgres
 - POSTGRES_PORT=5432
 - JUPYTER_TOKEN=123
+- S3_IAM_ROLE_ARN=arn:aws:s3:::dbt-duckdb-ingestion-s3-parquet (you can get this from the jupiter notebook output)
+- S3_ACCESS_KEY_ID=your_s3_access_key_id (you can get this from S3)
+- S3_SECRET_ACCESS_KEY=your_s3_secret_access_key_id (you can get this from S3)
+- S3_REGION=your_region (you can get this from S3)
+- S3_BUCKET_NAME=your_bucket_name (you can get this from S3)
+- S3_SNOWFLAKE_IAM_ROLE_ARN=arn:aws:iam::533267405478:role/mysnowflakerole (you can get this from the jupiter notebook output)
+- S3_SNOWFLAKE_STORAGE_INTEGRATION=your_s3_integration_name (you will create this, check jupyter notebook)
+- S3_SNOWFLAKE_STAGE=your_s3_stage_name (you will create this, check jupyter notebook)
+- S3_SNOWFLAKE_FILE_FORMAT=your_file_format_name (you will create this, check jupyter notebook)
+- SNOWFLAKE_USER=your_snowflake_user
+- SNOWFLAKE_ROLE=your_snowflake_new_role
+- SNOWFLAKE_PASSWORD=your_snowflake_password_role
+- SNOWFLAKE_ACCOUNT=your_snowflake_account_number
+- SNOWFLAKE_ACCOUNT_URL=https://YOUR_ACCOUNT_ID.YOUR_REGION.aws.snowflakecomputing.com
+- SNOWFLAKE_WAREHOUSE=your_snowflake_warehouse
+- SNOWFLAKE_DATABASE=your_snowflake_database
+- SNOWFLAKE_SCHEMA_BRONZE=bronze
 
 ### Build and Run
 
@@ -93,3 +110,10 @@ dbt (Data Build Tool) is a development environment that enables data analysts an
 2. **Configure database connection**: The `profiles.yml` was created inside a `.dbt` folder in the same level as the `docker-compose.yml`. It defines connections to your data warehouse. It also uses environment variables to specify sensitive information like database credentials (which in this case is making reference to the `.env` file that is being ignored by `.gitignore`, so you should have one in the same level as the `docker-compose.yml` - as shown in the folder structure above.)
 3. **Install dbt packages**: Never forget to run `dbt deps` so that dbt can install the packages within the `packages.yml` file.
 4. **Run DBT**: Once dbt is installed and configured, you can use it to build your dbt models. Use the `dbt run` command to run the models against your database and apply transformations.
+
+### PLEASE NOTE
+For this project, there are 2 (two) profiles.yml, which are exactly the same. However, the docker compose was created in a simplified manner, so it mounts the `.dbt` directory specific to `dbt_1_ingestion` into the container's root user's home directory (/root/.dbt).
+
+Therefore, when you run `dbt debug` inside any of the two dbt project folders (`dbt_1_ingestion` or `dbt_2_transformation`), dbt will look for the `profiles.yml` within the `dbt_1_ingestion`'s `.dbt` folder. Sorry for this, but it was just easier.
+
+* Thus, make sure to always update both `profiles.yml` and keep them exactly the same.

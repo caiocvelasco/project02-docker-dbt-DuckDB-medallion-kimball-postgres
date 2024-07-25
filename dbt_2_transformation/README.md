@@ -27,14 +27,11 @@
         - date_format.sql (macro to ensure date columns have date format)
       - generate_schema_name.sql (this macro makes sure your database schemas' names are respected)
     - **models**
-      - **sources**
-        - sources.yml
       - **bronze**
-        - bronze_dbt_model_1.sql
-        - properties.sql
+        - snowflake_external_stage.yml (dbt source file creating external tables in Snowflake)
       - **silver**
         - silver_dbt_model_1.sql
-        - properties.sql
+        - properties_silver.sql
       - **gold**
         - gold_dbt_model_1.sql
         - properties.sql

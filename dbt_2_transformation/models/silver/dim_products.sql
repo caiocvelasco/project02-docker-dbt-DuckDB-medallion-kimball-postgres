@@ -8,4 +8,4 @@ select
     cast(price as decimal(10, 2)) as price,  -- Ensure price format
     -- extracted_at,
     current_timestamp as inserted_at  -- Overwrite with current timestamp
-from {{ ref('products') }}  -- References the bronze.products table
+from {{ source('bronze','products') }}  -- References the bronze.products external table

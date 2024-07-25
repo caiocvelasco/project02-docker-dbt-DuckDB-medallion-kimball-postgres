@@ -13,3 +13,9 @@ bronze_parquet_output/
 
 # Ignore s3 sign-in details
 s3_stuff/
+
+# Ignore Old stuff
+old_stuff/
+
+# Ignore external_ingestion stuff
+external_ingestion/
