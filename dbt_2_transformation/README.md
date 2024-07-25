@@ -1,5 +1,7 @@
 # ETL - Part 2 of 2 - Leveraging dbt-Snowflake to perform Transformation Step (Reading Parquet from S3 -> Storing in Snowflake External Tables -> dbt Transformation in Snowflake).
 
+<img src = "img/dbt_2_transformation.jpg">
+
 ## Table of Contents
 
 - [Project Structure](#project-structure)
