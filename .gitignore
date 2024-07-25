@@ -16,6 +16,3 @@ s3_stuff/
 
 # Ignore Old stuff
 old_stuff/
-
-# Ignore external_ingestion stuff
-external_ingestion/

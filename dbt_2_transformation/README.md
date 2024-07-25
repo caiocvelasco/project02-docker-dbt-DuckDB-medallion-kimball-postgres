@@ -124,11 +124,12 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
   * Follow this (https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration) and it will guide you through the following:
     * Create an IAM Policy (done in AWS).
     * Create an IAM Role (done in AWS).
-    * Create a Cloud Storage Integration in Snowflake (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
-    * Retrieve the AWS IAM User for your Snowflake Account (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
-    * Grant the IAM User Permissions to Access Bucket Objects (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
-    * Create an External Stage (done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook).
-  * Note: the **External Tables** will be created by dbt.
+    * All the following are done in the `snowflake_up_to_ext_stage.ipynb` jupiter notebook.
+    * Create a Cloud Storage Integration in Snowflake.
+    * Retrieve the AWS IAM User for your Snowflake Account.
+    * Grant the IAM User Permissions to Access Bucket Objects.
+    * Create an External Stage.
+  * **Note**: the **External Tables** will be created by dbt, see below.
 
 2) Ensure your `dbt` environment is ready.
   * Configure your `profiles.yml`.
@@ -155,11 +156,12 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
       * An example is the `macro/tests/date_format.sql`. I created this macro in a `test/` folder to ensure that the date columns have a date format.
       * To apply this test, you need to put it in the `date_tests:` section of the `properties.yml` for the respective schema.
       * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for (for example) the bronze schema (i.e., the `bronze` name) is the one being used when the schemas are created in the Data Warehouse (Snowflake in this case).
-4) Run and test your dbt models.
-  * Make sure you are under the Docker's workspace where `.dbt` is located: `cd /workspace/dbt_2_transformation`
-  * Make sure the database connection is working by running `dbt debug` in the Docker bash terminal.
-  * We are using Snowflake External Tables as a way to make reference to Parquet files in S3. Therefore, we need to run the following before doing a `dbt run`:
-    * This will create the External Tables in Snowflake: `dbt run-operation stage_external_sources`
+
+4) Run dbt for the second dbt project (`dbt_1_transformation/`)
+  * run: `cd /workspace/dbt_2_transformation`
+  * run: `dbt debug` in the Docker bash terminal (this makes sure the database connection is working).
+  * We are using Snowflake External Tables as a way to make reference to Parquet files in S3. Therefore, we need to run the following before doing a `dbt run` so that dbt can create the External Tables in the **existing** External Stage:
+    * Run: `dbt run-operation stage_external_sources` (This will create the External Tables in Snowflake)
     * Check here: https://hub.getdbt.com/dbt-labs/dbt_external_tables/latest/
     * An official example here: https://github.com/dbt-labs/dbt-external-tables/blob/main/sample_sources/snowflake.yml
-  * Run `dbt run` and dbt will materialize the tables that DuckDB read from the Parquet files into DuckDB.
+  * run: `dbt run` and dbt will materialize the Parquet files into Snowflakes's Silver and Gold schema.

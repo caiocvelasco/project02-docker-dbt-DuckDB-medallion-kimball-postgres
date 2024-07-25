@@ -112,11 +112,16 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
 1) Ensure your environment is ready.
   * The Dockerfile and Docker Compose file will do this for you. You just need to open the repo with VSCode (make sure to have the prerequisites, as mentioned in the `Prerequisites` section above).
   * Check if the docker's bash terminal in VSCode can retrieve the environment variables: `env | grep POSTGRES`
-  * Make sure to add the external CSV files to `external_ingestion/data`.
-2) Configure your `profiles.yml`.
+  * Make sure to add the external CSV files to `external_postgres/data`.
+
+2) Ingest CSV files to Postgres (**This will function as a Postgres in PRODUCTION**)
+  * Run the `ingestion_in_raw.ipynb` noteboook.
+  * This will create the necessary schemas (`raw`) by executing the `external_postgres/create_schemas.sql` script and tables (same names as the CSV files) in Postgres and insert the data from the CSV files.
+
+3) Configure your `profiles.yml`.
   * `profiles.yml` is located under the `dbt_1_ingestion/.dbt/` folder.
   * This repo container the necessary information in `profiles.yml` to use DuckDB as an adapter.
-3) Organize your dbt project directory.
+4) Organize your dbt project directory.
   * `dbt_project.yml` file:
     * Under the `models > my_dbt_project` section, include only the bronze layer, because the `dbt_1_ingestion` project only performs the ingestion step.
   * `packages.yml` file:
@@ -128,7 +133,7 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
       * then `dbt deps` (this will look for the `packages.yml` file that should be in the same level as `dbt_project.yml`.)
   * `models/` folder: 
     * Contains the dbt models (i.e., SQL scripts or *.sql files) for the bronze layer.
-    * For each layer (e.g.: `models/bronze`) there is a `properties.yml` file. This file is where you specify data columns, tests, and any other property you want to ensure at each table in the schema. 
+    * For each layer (e.g.: `models/s3_bucket`) there is a `properties.yml` file. This file is where you specify data columns, tests, and any other property you want to ensure at each table in the schema. 
     * `models/sources/sources.yml`: Sources make it possible to name and describe the data loaded into your warehouse by your Extract-Load tool, i.e., the data from the CSV that was ingested into the bronze schema in DuckDB. When referencing these "source" tables in the dbt models, make sure to use the `{{ source('source_name','table_name') }}` jinja.
       * Notice that the `source_name` is defined with the `name:` tag in the `sources.yml` file.
   * `macro/` folder:
@@ -136,7 +141,14 @@ The step-by-step migration will be done for one table in Bronze. Then, we need t
     * An example is the `macro/tests/date_format.sql`. I created this macro in a `test/` folder to ensure that the date columns have a date format.
     * To apply this test, you need to put it in the `date_tests:` section of the `properties.yml` for the respective schema.
     * Moreover, you will find a `generate_schema_name.sql` macro that makes sure that the name we chose for the schema (i.e., the `dbt_caio` name) is the one being used when the schemas are created in DuckDB.
-4) Run and test your dbt models.
-  * Make sure you are under the Docker's workspace where `.dbt` is located: `cd /workspace/dbt_1_ingestion`
-  * Make sure the database connection is working by running `dbt debug` in the Docker bash terminal.
-  * Run `dbt run` and dbt will materialize the tables that DuckDB read from the `raw` schema in PostgreSQL and save them on a S3 Bucket as Parquet (`s3://dbt-duckdb-ingestion-s3-parquet/parquet-output`). The tables will also be materialized in DuckDB within the `dbt_caio` schema, following the best practices that are written as comments in the `profiles.yml` file.
+
+3) Test Connection to S3 Bucket
+  * Run the `test_s3_Access.ipynb` noteboook.
+
+4) Run dbt for the first dbt project (`dbt_1_ingestion/`)
+  * run: `cd /workspace/dbt_1_ingestion` in the Docker Bash Terminal.
+  * run: `dbt debug` in the Docker bash terminal (this makes sure the database connection is working).
+  * run: `dbt run` in the Docker Bash Terminal.
+    * dbt will materialize the tables that DuckDB read from the `raw` schema in PostgreSQL and save them on a subfolder of a S3 Bucket as Parquet (`s3://YOUR_S3_BUCKET_NAME/parquet-output`). 
+    * The tables will also be materialized in DuckDB within the `dbt_caio` schema, following the best practices that are written as comments in the `profiles.yml` file.
+  * Overall: DuckDB will read from PostgreSQL and write into the subfolder of your S3 Bucket as Parquet files.

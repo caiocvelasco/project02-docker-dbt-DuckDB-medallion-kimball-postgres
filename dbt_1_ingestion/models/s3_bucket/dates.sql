@@ -5,7 +5,7 @@
 -- The line below saves the dbt model externally as parquet. There are also other options. Check: https://github.com/duckdb/dbt-duckdb?tab=readme-ov-file#writing-to-external-files
 -- {{ config(materialized='external', location='/workspace/external_ingestion/bronze_parquet_output/dates.parquet') }}
 
-{{ config(materialized='external', location='s3://dbt-duckdb-ingestion-s3-parquet/dates.parquet') }}
+{{ config(materialized='external', location='s3://dbt-duckdb-ingestion-s3-parquet/dates/dates.parquet') }}
 
 select
     "DateID" as date_id,
